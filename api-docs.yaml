@@ -17,8 +17,8 @@ paths:
   /users:
     post:
       tags:
-        - "Auth"
-      summary: register new account for Authentication
+        - "Users"
+      summary: register new account for Login and Post
       description: mendaftarkan account baru kedalam database untuk sebuah akses
       requestBody:
         required: true
@@ -26,11 +26,12 @@ paths:
           application/json:
             schema:
               allOf:
-                - $ref: "#/components/schemas/Auth"
-                - properties:
+                - $ref: "#/components/schemas/Users"
+                - type: object
+                  properties:
                     password:
                       type: string
-                      example: admin123
+                      example: "12345"
 
       responses:
         201:
@@ -45,7 +46,7 @@ paths:
                     example: true
                   message:
                     type: string
-                    example: Success
+                    example: User created successfully
                   data:
                     type: object
                     properties:
@@ -55,8 +56,19 @@ paths:
                             properties:
                               id:
                                 type: integer
-                                example: 2
-                          - $ref: "#/components/schemas/Auth"
+                                example: 1
+                          - $ref: "#/components/schemas/Users"
+                          - type: object
+                            properties:
+                              address:
+                                type: string
+                                example: ~
+                              occupation:
+                                type: string
+                                example: ~
+                              avatar_url:
+                                type: string
+                                example: ~
                           
         400:
           description: Email has already been used!
@@ -71,8 +83,6 @@ paths:
                   message:
                     type: string
                     example: email has already been used!
-                  data:
-                    example: ~
 
         401:
           description: Input must be required
@@ -87,8 +97,6 @@ paths:
                   message:
                     type: string
                     example: input must be required
-                  data:
-                    example: ~
 
 components:
   securitySchemes:
@@ -101,79 +109,13 @@ components:
     Users:
       type: object
       properties:
-        id:
-          type: integer
-          example: 1
-        name:
+        first_name:
           type: string
           example: Dewangga
+        last_name:
+          type: string
+          example: Nanda
         email:
           type: string
-          example: dewangga@gmail.com
-        password:
-          type: string
-          example: dewangga123
-
-    Accounts:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        bank_name:
-          type: string
-          example: BCA
-        bank_account_number:
-          type: string
-          example: "24810030912"
-        balance:
-          type: integer
-          example: 5000000
-        user_id:
-          type: integer
-          example: 1
-
-    Profiles:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        identity_type:
-          type: string
-          example: KTP
-        identity_number:
-          type: string
-          example: "0000000000000000"
-        address:
-          type: string
-          example: Jalan Banyu Urip
-        user_id:
-          type: integer
-          example: 1
-
-    Transactions:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        amount:
-          type: integer
-          example: 100000
-        source_account_id:
-          type: integer
-          example: 1
-        destination_account_id:
-          type: integer
-          example: 2
-
-    Auth:
-      type: object
-      properties:
-        name:
-          type: string
-          example: admin
-        email:
-          type: string
-          example: admin@gmail.com
+          example: Admin@gmail.com
+        

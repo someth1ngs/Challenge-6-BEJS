@@ -5,10 +5,10 @@ POST http://localhost:3000/api/v1/users
 Content-Type: application/json
 
 {
-    "first_name": "Kibow",
-    "last_name": "Kibow",
-    "email": "Kibow@gmail.com",
-    "password": "Kibow123"
+    "first_name": "Dewangga",
+    "last_name": "Nanda",
+    "email": "Admin1@gmail.com",
+    "password": "12345"
 }
 
 ### GET - menampilkan daftar users.

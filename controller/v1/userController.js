@@ -12,7 +12,7 @@ module.exports = {
       let { first_name, last_name, email, password } = req.body;
 
       if (!first_name || !last_name || !email || !password) {
-        return res.status(404).json({
+        return res.status(401).json({
           status: false,
           message: "Input Required",
         });
@@ -115,6 +115,7 @@ module.exports = {
         let { url } = await imagekit.upload({
           fileName: Date.now() + path.extname(req.file.originalname),
           file: strFile,
+          folder: "/challenge6/avatar",
         });
         updateData.avatar_url = url;
       }
