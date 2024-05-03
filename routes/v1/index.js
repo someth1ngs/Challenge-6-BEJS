@@ -45,21 +45,25 @@ const file = fs.readFileSync(swagger_path, "utf-8");
 // API Docs
 const swaggerDocument = YAML.parse(file);
 router.use(
-  "/api-docs",
+  "/api/v1/api-docs",
   swaggerUI.serve,
   swaggerUI.setup(swaggerDocument)
 );
 
 // API Users //
-router.post("/users", userController.register);
-router.get("/users",  userController.index);
-router.put("/users/:id", restrict, image.single("file"), userController.update);
+router.post("/api/v1/users", userController.register);
+router.get("/api/v1/users",  userController.index);
+router.put("/api/v1/users/:id", restrict, image.single("file"), userController.update);
 
 // LOGIN AND AUTH API
-router.post("/auth/login", userController.login);
-router.get("/auth/authenticate", restrict, userController.auth);
+router.post("/api/v1/auth/login", userController.login);
+router.get("/api/v1/auth/authenticate", restrict, userController.auth);
 
 // API POST //
-router.post("/posts", restrict, image.single('file'), postController.post);
+router.post("/api/v1/posts", restrict, image.single('file'), postController.store);
+router.get("/api/v1/posts", restrict, postController.index);
+router.get("/api/v1/posts/:id", restrict, postController.show);
+router.put("/api/v1/posts/:id/", restrict, postController.update);
+router.delete("/api/v1/posts/:id/", restrict, postController.destroy);
 
 module.exports = router;
