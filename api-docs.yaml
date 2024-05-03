@@ -1,0 +1,803 @@
+openapi: 3.0.1
+info:
+  title: API DOCUMENTATION
+  description: API Documentation for Challenge 5 about Bank System
+  version: 1.0.1
+  contact:
+    email: adewanggan@gmail.com
+servers:
+  - url: http://localhost:3000/api/v1
+tags:
+  - name: Auth
+    description: Everything about Authentication
+  - name: Users
+    description: Everything about your Users
+  - name: Accounts
+    description: Everything about your Accounts
+  - name: Transactions
+    description: Everything about Transactions
+paths:
+  /auth/register:
+    post:
+      tags:
+        - "Auth"
+      summary: register new account for Authentication
+      description: mendaftarkan account baru kedalam database untuk sebuah akses
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/Auth"
+                - properties:
+                    password:
+                      type: string
+                      example: admin123
+
+      responses:
+        201:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Success
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 2
+                          - $ref: "#/components/schemas/Auth"
+                          
+        400:
+          description: Email has already been used!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: email has already been used!
+                  data:
+                    example: ~
+
+        401:
+          description: Input must be required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: input must be required
+                  data:
+                    example: ~
+
+  /auth/login:
+    post:
+      tags:
+        - "Auth"
+      summary: Login account for Authentication
+      description: Login akan mendapatkan Token untuk akses sistem, masukkan token kedalam Authorize diatas (Sebelah Server)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: admin@gmail.com
+                password:
+                  type: string
+                  example: admin123
+
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 2
+                      name:
+                        type: string
+                        example: admin
+                      email:
+                        type: string
+                        example: admin@gmail.com
+                      token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwibmFtZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTcxMzU4OTEzMH0.kamcTR8kpowKmQByfRfwHdDTP8rEiGz9JyTTWzlB7VM
+                        
+        400:
+          description: Invalid email or password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid email or password
+                  data:
+                    example: ~
+
+  /auth/authenticate:
+    get:
+      tags:
+        - "Auth"
+      summary: Authentication with Token
+      description: Gunakan Token yang telah didapat dari Login
+      
+      responses:
+        200:
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 2
+                      name:
+                        type: string
+                        example: admin
+                      email:
+                        type: string
+                        example: admin@gmail.com
+        
+        400:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Token not provided
+                  data:
+                    example: ~
+
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example:
+                    - jwt malformed
+                    - invalid algorithm
+                    - invalid token
+                    - invalid signature
+                    - unexpected token
+                  data:
+                    example: ~
+      security:
+        - bearerAuth: []
+
+
+  /users:
+    post:
+      tags:
+        - "Users"
+      summary: register new Users
+      description: mendaftarkan Users baru kedalam database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Dewangga
+                email:
+                  type: string
+                  example: dewangga@gmail.com
+                password:
+                  type: string
+                  example: dewangga123
+                identity_type:
+                  type: string
+                  example: KTP
+                identity_number:
+                  type: string
+                  example: "0000000000000000"
+                address:
+                  type: string
+                  example: Jalan Banyu Urip
+
+      responses:
+        201:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User dan Profile berhasil didaftarkan
+                  data:
+                    allOf:
+                      - $ref: "#/components/schemas/Users"
+                      - type: object
+                        properties:
+                          profile:
+                            $ref: "#/components/schemas/Profiles"
+
+        400:
+          description: Duplicate Email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Email already used
+                    
+        404:
+          description: Input required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    status:
+                      type: boolean
+                      example: false
+                    message:
+                      type: string
+                      example: Input Required
+
+    get:
+      tags:
+        - "Users"
+      summary: get all users
+      parameters:
+        - schema:
+            type: string
+          name: search
+          in: query
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Berhasil mengambil data Users
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Users"
+
+        400:
+          description: user dengan nama tersebut tidak ada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Users dengan nama test tidak ada
+
+  /users/{user_id}:
+    get:
+      tags:
+        - "Users"
+      summary: get detail users
+      parameters:
+        - schema:
+            type: integer
+          name: user_id
+          in: path
+          required: true
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    allOf:
+                      - $ref: "#/components/schemas/Users"
+                      - type: object
+                        properties:
+                          profile:
+                            $ref: "#/components/schemas/Profiles"
+
+        400:
+          description: User_id tidak ditemukan/tidak valid!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: User tidak ditemukan dengan userId 100
+
+  /accounts:
+    post:
+      tags:
+        - "Accounts"
+      summary: register new Accounts
+      description: mendaftarkan Accounts baru kedalam database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bank_name:
+                  type: string
+                  example: Mandiri
+                bank_account_number:
+                  type: string
+                  example: "91827364501"
+                balance:
+                  type: integer
+                  example: 5000000
+                user_id:
+                  type: integer
+                  example: 5
+
+      responses:
+        201:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    $ref: "#/components/schemas/Accounts"
+
+        404:
+          description: user_id tidak dapat ditemukan!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: User dengan id 5 tidak dapat ditemukan
+
+    get:
+      tags:
+        - "Accounts"
+      summary: get all accounts
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Accounts"
+
+  /accounts/{account_id}:
+    get:
+      tags:
+        - "Accounts"
+      summary: get detail accounts
+      parameters:
+        - schema:
+            type: integer
+          name: account_id
+          in: path
+          required: true
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    allOf:
+                      - $ref: "#/components/schemas/Accounts"
+                      - type: object
+                        properties:
+                          user:
+                            allOf:
+                            - $ref: "#/components/schemas/Users"
+                            - type: object
+                              properties:
+                                profile:
+                                  $ref: "#/components/schemas/Profiles"
+          
+        400:
+          description: id_akun tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Akun tidak ditemukan dengan id Akun 100
+  
+  /transactions:
+    post:
+      tags:
+        - "Transactions"
+      summary: register new Transactions
+      description: mendaftarkan transaksi baru kedalam database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source_account_id:
+                  type: integer
+                  example: 6
+                destination_account_id:
+                  type: integer
+                  example: 5
+                amount:
+                  type: integer
+                  example: 100000
+      
+      responses:
+        201:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Transfer Sukses
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 14
+                      amount:
+                        type: integer
+                        example: 100000
+                      source_account_id:
+                        type: integer
+                        example: 6
+                      destination_account_id:
+                        type: integer
+                        example: 5
+        
+        400:
+          description: Saldo tidak mencukupi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Saldo tidak mencukupi
+        
+        404:
+          description: Untuk pengirim atau penerima tidak valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Untuk pengirim atau penerima tidak valid
+    
+    get:
+      tags:
+        - "Transactions"
+      summary: Get All Transactions
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data: 
+                    type: array
+                    items:
+                      type: object
+                      properties: 
+                        id:
+                          type: integer
+                          example: 1
+                        amount:
+                          type: integer
+                          example: 100000
+                        source_account_id:
+                          type: integer
+                          example: 1
+                        destination_account_id:
+                          type: integer
+                          example: 2
+  
+  /transactions/{transaction_id}:
+    get:
+      tags:
+        - "Transactions"
+      summary: Get Detail Transactions
+      parameters:
+        - schema:
+            type: integer
+          name: transaction_id
+          in: path
+          required: true
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    allOf:
+                    - $ref: "#/components/schemas/Transactions"
+                    - type: object
+                    properties:
+                      sourceAccounts:
+                        $ref: "#/components/schemas/Accounts"
+                      destinationAccounts:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 2
+                          bank_name:
+                            type: string
+                            example: BNI
+                          bank_account_number:
+                            type: string
+                            example: "12143208019"
+                          balance:
+                            type: integer
+                            example: 2000000
+                          user_id:
+                            type: integer
+                            example: 2
+        400:
+          description: Transaksi tidak ditemukan dengan id Transaksi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Transaksi tidak ditemukan dengan id Transaksi
+
+components:
+  securitySchemes:
+    bearerAuth:       
+      type: http
+      scheme: bearer       
+      bearerFormat: JWT
+
+  schemas:
+    Users:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Dewangga
+        email:
+          type: string
+          example: dewangga@gmail.com
+        password:
+          type: string
+          example: dewangga123
+
+    Accounts:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        bank_name:
+          type: string
+          example: BCA
+        bank_account_number:
+          type: string
+          example: "24810030912"
+        balance:
+          type: integer
+          example: 5000000
+        user_id:
+          type: integer
+          example: 1
+    
+    Profiles:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        identity_type:
+          type: string
+          example: KTP
+        identity_number:
+          type: string
+          example: "0000000000000000"
+        address:
+          type: string
+          example: Jalan Banyu Urip
+        user_id:
+          type: integer
+          example: 1
+
+    Transactions:
+      type: object
+      properties: 
+        id:
+          type: integer
+          example: 1
+        amount:
+          type: integer
+          example: 100000
+        source_account_id:
+          type: integer
+          example: 1
+        destination_account_id:
+          type: integer
+          example: 2
+
+    Auth:
+      type: object
+      properties: 
+        name:
+          type: string
+          example: admin
+        email:
+          type: string
+          example: admin@gmail.com

@@ -5,24 +5,24 @@ POST http://localhost:3000/api/v1/users
 Content-Type: application/json
 
 {
-    "first_name": "Dewangga",
-    "last_name": "Nanda",
-    "email": "Dewangga@gmail.com",
-    "password": "12345"
+    "first_name": "Kibow",
+    "last_name": "Kibow",
+    "email": "Kibow@gmail.com",
+    "password": "Kibow123"
 }
 
 ### GET - menampilkan daftar users.
 GET http://localhost:3000/api/v1/users
 
 ### UPDATE - USERS (Bisa tanpa avatar/password, kalau ingin pakai avatar harus pake postman)
-PUT http://localhost:3000/api/v1/users/1
+PUT http://localhost:3000/api/v1/users/2
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6ImRld2FuZ2dhQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNDUiLCJhZGRyZXNzIjpudWxsLCJvY2N1cGF0aW9uIjpudWxsLCJhdmF0YXJfdXJsIjpudWxsLCJpYXQiOjE3MTQzOTU2NTR9.f9dcAlLaibk86s6kUYywTVe1kzbDfuI-4hDzuZeNeqc
 
 {
-    "first_name": "Dewangga",
-    "last_name": "Dewangga",
-    "email": "Admin@gmail.com",
+    "first_name": "Kibow",
+    "last_name": "Kibow",
+    "email": "Admin2@gmail.com",
     "address": "Surabaya",
     "occupation": "Mahasiswa",
     "password": "123456789"
@@ -38,7 +38,7 @@ POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "email": "Admin@gmail.com",
+    "email": "Admin2@gmail.com",
     "password": "123456789"
 }
 
