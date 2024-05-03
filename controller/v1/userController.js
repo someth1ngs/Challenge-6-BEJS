@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const imagekit = require("../../libs/imagekit");
-const path = require("path")
+const path = require("path");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET_KEY } = process.env;
@@ -29,18 +29,21 @@ module.exports = {
         });
       }
 
+      let encryptedPassword = await bcrypt.hash(password, 10);
+
       let user = await prisma.user.create({
         data: {
           first_name,
           last_name,
           email,
-          password,
+          password: encryptedPassword,
         },
       });
+      delete user.password;
 
       res.status(201).json({
         status: true,
-        message: "User berhasil didaftarkan",
+        message: "User created successfully",
         data: user,
       });
     } catch (error) {
@@ -77,23 +80,8 @@ module.exports = {
   update: async (req, res, next) => {
     const id = Number(req.params.id);
     try {
-      // Untuk upload dan minta url //
-      let strFile = req.file.buffer.toString("base64");
-
-      let { url } = await imagekit.upload({
-        fileName: Date.now() + path.extname(req.file.originalname),
-        file: strFile,
-      });
-      //////////// batas ////////////
-
-      let { first_name, last_name, email, address, occupation } = req.body;
-
-      if (!first_name || !last_name || !email || !address || !occupation) {
-        return res.status(404).json({
-          status: false,
-          message: "All Input Update Required",
-        });
-      }
+      let { first_name, last_name, email, address, occupation, password } =
+        req.body;
 
       const exist = await prisma.user.findUnique({
         where: { id },
@@ -107,17 +95,40 @@ module.exports = {
         });
       }
 
+      let updateData = {
+        first_name,
+        last_name,
+        email,
+        address,
+        occupation,
+      };
+
+      if (req.file) {
+        let strFile = req.file.buffer.toString("base64");
+        let { url } = await imagekit.upload({
+          fileName: Date.now() + path.extname(req.file.originalname),
+          file: strFile,
+        });
+        updateData.avatar_url = url;
+      }
+
+      if (password) {
+        let encryptedPassword = await bcrypt.hash(password, 10);
+        updateData.password = encryptedPassword;
+      }
+
+      if (!first_name || !last_name || !email || !address || !occupation) {
+        return res.status(400).json({
+          status: false,
+          message: "All Input Update Required",
+        });
+      }
+
       const user = await prisma.user.update({
         where: { id },
-        data: {
-          first_name,
-          last_name,
-          email,
-          address,
-          occupation,
-          avatar_url: url,
-        },
+        data: updateData,
       });
+      delete user.password;
 
       res.status(200).json({
         status: true,
@@ -131,17 +142,27 @@ module.exports = {
 
   login: async (req, res, next) => {
     try {
-      let { first_name, last_name, email } = req.body;
+      let { email, password } = req.body;
 
       let user = await prisma.user.findFirst({ where: { email } });
-      if (!user || !first_name || !last_name || !email) {
+      if (!user || !email || !password) {
         return res.status(400).json({
           status: false,
-          message: "Invalid email",
+          message: "Invalid email or password",
           data: null,
         });
       }
 
+      let isPasswordCorrect = await bcrypt.compare(password, user.password);
+      if (!isPasswordCorrect) {
+        return res.status(400).json({
+          status: false,
+          message: "Invalid email or password",
+          data: null,
+        });
+      }
+
+      delete user.password;
       let token = jwt.sign(user, JWT_SECRET_KEY);
 
       return res.status(200).json({
