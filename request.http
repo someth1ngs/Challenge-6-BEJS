@@ -5,45 +5,73 @@ POST http://localhost:3000/api/v1/users
 Content-Type: application/json
 
 {
-    "first_name": "Kepin",
-    "last_name": "Yohanes",
-    "email": "Kepin@gmail.com",
+    "first_name": "Dewangga",
+    "last_name": "Nanda",
+    "email": "Admin3@gmail.com",
     "password": "12345"
 }
 
 ### GET - menampilkan daftar users.
-GET http://localhost:3000/api/v1/users
+GET http://localhost:3000/api/v1/users?search=
 
-### UPDATE - USERS
+### GET - menampilkan detail user.
+GET http://localhost:3000/api/v1/users/100
+
+### UPDATE - USERS (Bisa tanpa avatar/password, kalau ingin pakai avatar harus pake postman)
 PUT http://localhost:3000/api/v1/users/2
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6ImRld2FuZ2dhQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNDUiLCJhZGRyZXNzIjpudWxsLCJvY2N1cGF0aW9uIjpudWxsLCJhdmF0YXJfdXJsIjpudWxsLCJpYXQiOjE3MTQzOTU2NTR9.f9dcAlLaibk86s6kUYywTVe1kzbDfuI-4hDzuZeNeqc
 
 {
-    "first_name": "Dewangga",
-    "last_name": "Nanda",
-    "email": "Dewangga@gmail.com",
+    "first_name": "Kibow",
+    "last_name": "Kibow",
+    "email": "Admin2@gmail.com",
     "address": "Surabaya",
-    "occupation": "Mahasiswa"   
+    "occupation": "Mahasiswa",
+    "password": "123456789"
 }
 
 ############################
 
 
-######### API Auth #########
+##### API Auth (USERS) ######
 
 ### POST - LOGIN
 POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "first_name": "Dewangga",
-    "last_name": "Nanda",
-    "email": "Dewangga@gmail.com"
+    "email": "Admin@gmail.com",
+    "password": "12345"
 }
 
 ### GET - Authenticate
 GET http://localhost:3000/api/v1/auth/authenticate
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6IkFkbWluQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNDUiLCJhZGRyZXNzIjoiU3VyYWJheWEiLCJvY2N1cGF0aW9uIjoiTWFoYXNpc3dhIiwiYXZhdGFyX3VybCI6Imh0dHBzOi8vaWsuaW1hZ2VraXQuaW8vZGV3YW5nZ2EvMTcxNDcyODcyNzQyOF9nSVlkbDVJRXkuanBnIiwiaWF0IjoxNzE0NzI4NzUyfQ.nje7vJKPukqOlwhTh3aRAjwGK-lZOVUuDbLsW3xGiYU
+
+#############################
+
+
+######### API POSTS #########
+### GET ALL POSTS
+GET http://localhost:3000/api/v1/posts?search=
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6IkFkbWluQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNDUiLCJhZGRyZXNzIjoiU3VyYWJheWEiLCJvY2N1cGF0aW9uIjoiTWFoYXNpc3dhIiwiYXZhdGFyX3VybCI6Imh0dHBzOi8vaWsuaW1hZ2VraXQuaW8vZGV3YW5nZ2EvMTcxNDcyODcyNzQyOF9nSVlkbDVJRXkuanBnIiwiaWF0IjoxNzE0NzI4NzUyfQ.nje7vJKPukqOlwhTh3aRAjwGK-lZOVUuDbLsW3xGiYU
+
+### GET DETAILED POST by ID
+GET http://localhost:3000/api/v1/posts/5
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6IkFkbWluQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNDUiLCJhZGRyZXNzIjoiU3VyYWJheWEiLCJvY2N1cGF0aW9uIjoiTWFoYXNpc3dhIiwiYXZhdGFyX3VybCI6Imh0dHBzOi8vaWsuaW1hZ2VraXQuaW8vZGV3YW5nZ2EvMTcxNDcyODcyNzQyOF9nSVlkbDVJRXkuanBnIiwiaWF0IjoxNzE0NzI4NzUyfQ.nje7vJKPukqOlwhTh3aRAjwGK-lZOVUuDbLsW3xGiYU
+
+### EDIT POST
+PUT http://localhost:3000/api/v1/posts/5
+Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6ImRld2FuZ2dhQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNDUiLCJhZGRyZXNzIjpudWxsLCJvY2N1cGF0aW9uIjpudWxsLCJhdmF0YXJfdXJsIjpudWxsLCJpYXQiOjE3MTQzOTU2NTR9.f9dcAlLaibk86s6kUYywTVe1kzbDfuI-4hDzuZeNeqc
 
-############################
+{
+    "title": "Selfie",
+    "description": "Picture of myself, hehe"
+}
+
+### GET DETAILED POST by ID
+DELETE http://localhost:3000/api/v1/posts/5
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6IkFkbWluQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNDUiLCJhZGRyZXNzIjoiU3VyYWJheWEiLCJvY2N1cGF0aW9uIjoiTWFoYXNpc3dhIiwiYXZhdGFyX3VybCI6Imh0dHBzOi8vaWsuaW1hZ2VraXQuaW8vZGV3YW5nZ2EvMTcxNDcyODcyNzQyOF9nSVlkbDVJRXkuanBnIiwiaWF0IjoxNzE0NzI4NzUyfQ.nje7vJKPukqOlwhTh3aRAjwGK-lZOVUuDbLsW3xGiYU
+#############################

@@ -1,4 +1,8 @@
 const router = require("express").Router();
+const swaggerUI = require("swagger-ui-express");
+const YAML = require("yaml");
+const fs = require("fs");
+const path = require("path");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET_KEY } = process.env;
 const { image } = require("../../libs/multer.js");
@@ -32,18 +36,35 @@ let restrict = (req, res, next) => {
 
 // Required Controller
 const userController = require("../../controller/v1/userController.js");
-const authController = require("../../controller/v1/authController.js");
+const postController = require("../../controller/v1/postController.js");
 
+// Directory Documentation API
+const swagger_path = path.resolve(__dirname, "../../api-docs.yaml");
+const file = fs.readFileSync(swagger_path, "utf-8");
 
-// API Users + Profile //
-router.post("/api/v1/users", userController.store);
+// API Docs
+const swaggerDocument = YAML.parse(file);
+router.use(
+  "/api/v1/api-docs",
+  swaggerUI.serve,
+  swaggerUI.setup(swaggerDocument)
+);
+
+// API Users //
+router.post("/api/v1/users", userController.register);
 router.get("/api/v1/users",  userController.index);
-
-// Buat update semuanya (input semua wajib di isi)
+router.get("/api/v1/users/:id",  userController.show);
 router.put("/api/v1/users/:id", restrict, image.single("file"), userController.update);
 
-// API Auth //
-router.post("/api/v1/auth/login", authController.login);
-router.get("/api/v1/auth/authenticate", restrict, authController.auth);
+// LOGIN AND AUTH API
+router.post("/api/v1/auth/login", userController.login);
+router.get("/api/v1/auth/authenticate", restrict, userController.auth);
+
+// API POST //
+router.post("/api/v1/posts", restrict, image.single('file'), postController.store);
+router.get("/api/v1/posts", restrict, postController.index);
+router.get("/api/v1/posts/:id", restrict, postController.show);
+router.put("/api/v1/posts/:id/", restrict, postController.update);
+router.delete("/api/v1/posts/:id/", restrict, postController.destroy);
 
 module.exports = router;

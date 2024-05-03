@@ -3,201 +3,221 @@ const prisma = new PrismaClient();
 const imagekit = require("../../libs/imagekit");
 const path = require("path");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET_KEY } = process.env;
 
 module.exports = {
   register: async (req, res, next) => {
     try {
-      let { name, email, password } = req.body;
+      let { first_name, last_name, email, password } = req.body;
 
-      if (!name || !email || !password) {
+      if (!first_name || !last_name || !email || !password) {
         return res.status(401).json({
           status: false,
-          message: "input must be required",
-          data: null,
+          message: "Input Required",
         });
       }
 
-      let exist = await prisma.user.findFirst({ where: { email } });
+      let exist = await prisma.user.findFirst({
+        where: { email },
+      });
 
       if (exist) {
         return res.status(400).json({
           status: false,
-          message: "email has already been used!",
-          data: null,
+          message: "email already used",
         });
       }
 
       let encryptedPassword = await bcrypt.hash(password, 10);
-      let userData = { name, email, password: encryptedPassword };
-      let user = await prisma.user.create({ data: userData });
+
+      let user = await prisma.user.create({
+        data: {
+          first_name,
+          last_name,
+          email,
+          password: encryptedPassword,
+        },
+      });
       delete user.password;
 
-      return res.status(201).json({
+      res.status(201).json({
         status: true,
-        message: "success",
-        data: { user },
+        message: "User created successfully",
+        data: user,
       });
-
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      next(error);
     }
   },
-  // store: async (req, res, next) => {
-  //   try {
-  //     let { first_name, last_name, email, password } = req.body;
 
-  //     if (!first_name || !last_name || !email || !password) {
-  //       return res.status(404).json({
-  //         status: false,
-  //         message: "Input Required",
-  //       });
-  //     }
+  index: async (req, res, next) => {
+    try {
+      let { search } = req.query;
 
-  //     let exist = await prisma.user.findFirst({
-  //       where: { email },
-  //     });
+      let users = await prisma.user.findMany({
+        where: { first_name: { contains: search } },
+        orderBy: { id: "asc" },
+      });
 
-  //     if (exist) {
-  //       return res.status(400).json({
-  //         status: false,
-  //         message: "email already used",
-  //       });
-  //     }
+      if (users.length === 0) {
+        res.status(400).json({
+          status: false,
+          message: `Users dengan nama ${search} tidak ada!`,
+        });
+      }
 
-  //     let user = await prisma.user.create({
-  //       data: {
-  //         first_name,
-  //         last_name,
-  //         email,
-  //         password,
-  //       },
-  //     });
+      users.forEach((user) => {
+        delete user.password;
+        delete user.address;
+        delete user.occupation;
+        delete user.avatar_url;
+        delete user.avatar_id;
+      });
 
-  //     res.status(201).json({
-  //       status: true,
-  //       message: "User berhasil didaftarkan",
-  //       data: user,
-  //     });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // },
+      res.status(200).json({
+        status: true,
+        message: "Berhasil mengambil data Users",
+        data: users,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 
-  // update: async (req, res, next) => {
-  //   const id = Number(req.params.id);
-  //   try {
-  //     // Untuk upload dan minta url //
-  //     let strFile = req.file.buffer.toString("base64");
+  show: async (req, res, next) => {
+    const id = Number(req.params.id);
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id },
+      });
 
-  //     let { url } = await imagekit.upload({
-  //       fileName: Date.now() + path.extname(req.file.originalname),
-  //       file: strFile,
-  //     });
-  //     //////////// batas ////////////
+      if (!user) {
+        return res.status(400).json({
+          status: false,
+          message: `User tidak ditemukan dengan userId ${id}`,
+        });
+      }
+      delete user.password;
 
-  //     let { first_name, last_name, email, address, occupation } = req.body;
+      res.status(200).json({
+        status: true,
+        message: "success",
+        data: user,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 
-  //     if (!first_name || !last_name || !email || !address || !occupation) {
-  //       return res.status(404).json({
-  //         status: false,
-  //         message: "All Input Update Required",
-  //       });
-  //     }
+  update: async (req, res, next) => {
+    const id = Number(req.params.id);
+    try {
+      let { first_name, last_name, email, address, occupation, password } =
+        req.body;
 
-  //     const exist = await prisma.user.findUnique({
-  //       where: { id },
-  //     });
+      if (!first_name || !last_name || !email || !address || !occupation) {
+        return res.status(400).json({
+          status: false,
+          message: "All Input Update Required",
+        });
+      }
 
-  //     if (!exist) {
-  //       return res.status(404).json({
-  //         status: false,
-  //         message: `User with id ${id} not found`,
-  //         data: null,
-  //       });
-  //     }
+      let updateData = {
+        first_name,
+        last_name,
+        email,
+        address,
+        occupation,
+      };
 
-  //     const user = await prisma.user.update({
-  //       where: { id },
-  //       data: {
-  //         first_name,
-  //         last_name,
-  //         email,
-  //         address,
-  //         occupation,
-  //         avatar_url: url,
-  //       },
-  //     });
+      const exist = await prisma.user.findUnique({
+        where: { id },
+      });
 
-  //     res.status(200).json({
-  //       status: true,
-  //       message: "User updated successfully",
-  //       data: user,
-  //     });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // },
+      if (!exist) {
+        return res.status(404).json({
+          status: false,
+          message: `User with id ${id} not found`,
+          data: null,
+        });
+      }
 
-  // index: async (req, res, next) => {
-  //   try {
-  //     let { search } = req.query;
+      if (req.file) {
+        let strFile = req.file.buffer.toString("base64");
+        let { url } = await imagekit.upload({
+          fileName: Date.now() + path.extname(req.file.originalname),
+          file: strFile,
+          folder: "/challenge6/avatar",
+        });
+        updateData.avatar_url = url;
+      }
 
-  //     let users = await prisma.user.findMany({
-  //       where: { first_name: { contains: search } },
-  //       orderBy: { id: "asc" },
-  //     });
+      if (password) {
+        let encryptedPassword = await bcrypt.hash(password, 10);
+        updateData.password = encryptedPassword;
+      }
 
-  //     if (users.length === 0) {
-  //       res.status(400).json({
-  //         status: false,
-  //         message: `Users dengan nama ${search} tidak ada!`,
-  //       });
-  //     }
+      const user = await prisma.user.update({
+        where: { id },
+        data: updateData,
+      });
+      delete user.password;
 
-  //     res.status(200).json({
-  //       status: true,
-  //       message: "Berhasil mengambil data Users",
-  //       data: users,
-  //     });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // },
+      res.status(200).json({
+        status: true,
+        message: "User updated successfully",
+        data: user,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 
-  // avatar: async (req, res, next) => {
-  //   const id = Number(req.params.id);
-  //   try {
-  //     let strFile = req.file.buffer.toString("base64");
+  login: async (req, res, next) => {
+    try {
+      let { email, password } = req.body;
 
-  //     let { url } = await imagekit.upload({
-  //       fileName: Date.now() + path.extname(req.file.originalname),
-  //       file: strFile,
-  //     });
+      let user = await prisma.user.findFirst({ where: { email } });
+      if (!user || !email || !password) {
+        return res.status(400).json({
+          status: false,
+          message: "Invalid email or password",
+          data: null,
+        });
+      }
 
-  //     const exist = await prisma.user.findUnique({
-  //       where: { id },
-  //     });
+      let isPasswordCorrect = await bcrypt.compare(password, user.password);
+      if (!isPasswordCorrect) {
+        return res.status(400).json({
+          status: false,
+          message: "Invalid email or password",
+          data: null,
+        });
+      }
 
-  //     if (!exist) {
-  //       return res.status(404).json({
-  //         status: false,
-  //         message: `User with id ${id} not found`,
-  //         data: null,
-  //       });
-  //     }
+      delete user.password;
+      let token = jwt.sign(user, JWT_SECRET_KEY);
 
-  //     const user = await prisma.user.update({
-  //       where: { id },
-  //       data: { avatar_url: url },
-  //     });
+      return res.status(200).json({
+        status: true,
+        message: "OK",
+        data: { ...user, token },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 
-  //     res.status(200).json({
-  //       status: true,
-  //       message: "User updated successfully",
-  //       data: user,
-  //     });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // },
+  auth: async (req, res, next) => {
+    try {
+      return res.status(200).json({
+        status: true,
+        message: "OK",
+        data: req.user,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
