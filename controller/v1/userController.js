@@ -93,14 +93,13 @@ module.exports = {
       });
 
       if (!user) {
-        return res.status(404).json({
+        return res.status(400).json({
           status: false,
-          message: `User with id ${id} not found`,
-          data: null,
+          message: `User tidak ditemukan dengan userId ${id}`,
         });
       }
       delete user.password;
-      
+
       res.status(200).json({
         status: true,
         message: "success",
