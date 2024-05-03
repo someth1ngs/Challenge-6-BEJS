@@ -76,7 +76,7 @@ module.exports = {
       });
 
       if (!Post) {
-        return res.status(404).json({
+        return res.status(400).json({
           status: false,
           message: `Post with id ${id} not found`,
           data: null,
@@ -148,8 +148,7 @@ module.exports = {
       if (!exist) {
         return res.status(404).json({
           status: false,
-          message: `Post Image with id ${id} not found`,
-          data: null,
+          message: `Post with id ${id} not found`,
         });
       }
 
@@ -165,7 +164,7 @@ module.exports = {
           });
           return res.status(200).json({
             status: true,
-            message: "Post Image deleted successfully",
+            message: "Post deleted successfully",
           });
         }
       });

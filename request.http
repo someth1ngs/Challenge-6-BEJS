@@ -12,10 +12,10 @@ Content-Type: application/json
 }
 
 ### GET - menampilkan daftar users.
-GET http://localhost:3000/api/v1/users?search=akosdkaoskdoakd`
+GET http://localhost:3000/api/v1/users?search=
 
 ### GET - menampilkan detail user.
-GET http://localhost:3000/api/v1/users/1
+GET http://localhost:3000/api/v1/users/100
 
 ### UPDATE - USERS (Bisa tanpa avatar/password, kalau ingin pakai avatar harus pake postman)
 PUT http://localhost:3000/api/v1/users/2
@@ -41,8 +41,8 @@ POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "email": "Admin2@gmail.com",
-    "password": "123456789"
+    "email": "Admin@gmail.com",
+    "password": "12345"
 }
 
 ### GET - Authenticate
@@ -58,11 +58,11 @@ GET http://localhost:3000/api/v1/posts?search=
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6IkFkbWluQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNDUiLCJhZGRyZXNzIjoiU3VyYWJheWEiLCJvY2N1cGF0aW9uIjoiTWFoYXNpc3dhIiwiYXZhdGFyX3VybCI6Imh0dHBzOi8vaWsuaW1hZ2VraXQuaW8vZGV3YW5nZ2EvMTcxNDcyODcyNzQyOF9nSVlkbDVJRXkuanBnIiwiaWF0IjoxNzE0NzI4NzUyfQ.nje7vJKPukqOlwhTh3aRAjwGK-lZOVUuDbLsW3xGiYU
 
 ### GET DETAILED POST by ID
-GET http://localhost:3000/api/v1/posts/1
+GET http://localhost:3000/api/v1/posts/5
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6IkFkbWluQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNDUiLCJhZGRyZXNzIjoiU3VyYWJheWEiLCJvY2N1cGF0aW9uIjoiTWFoYXNpc3dhIiwiYXZhdGFyX3VybCI6Imh0dHBzOi8vaWsuaW1hZ2VraXQuaW8vZGV3YW5nZ2EvMTcxNDcyODcyNzQyOF9nSVlkbDVJRXkuanBnIiwiaWF0IjoxNzE0NzI4NzUyfQ.nje7vJKPukqOlwhTh3aRAjwGK-lZOVUuDbLsW3xGiYU
 
 ### EDIT POST
-PUT http://localhost:3000/api/v1/posts/1
+PUT http://localhost:3000/api/v1/posts/5
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6ImRld2FuZ2dhQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNDUiLCJhZGRyZXNzIjpudWxsLCJvY2N1cGF0aW9uIjpudWxsLCJhdmF0YXJfdXJsIjpudWxsLCJpYXQiOjE3MTQzOTU2NTR9.f9dcAlLaibk86s6kUYywTVe1kzbDfuI-4hDzuZeNeqc
 
@@ -72,6 +72,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3Rfb
 }
 
 ### GET DETAILED POST by ID
-DELETE http://localhost:3000/api/v1/posts/4
+DELETE http://localhost:3000/api/v1/posts/5
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6IkFkbWluQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNDUiLCJhZGRyZXNzIjoiU3VyYWJheWEiLCJvY2N1cGF0aW9uIjoiTWFoYXNpc3dhIiwiYXZhdGFyX3VybCI6Imh0dHBzOi8vaWsuaW1hZ2VraXQuaW8vZGV3YW5nZ2EvMTcxNDcyODcyNzQyOF9nSVlkbDVJRXkuanBnIiwiaWF0IjoxNzE0NzI4NzUyfQ.nje7vJKPukqOlwhTh3aRAjwGK-lZOVUuDbLsW3xGiYU
 #############################

@@ -13,6 +13,8 @@ tags:
     description: Everything about your Users
   - name: Posts
     description: Everything about your Posts
+  - name: Auth
+    description: Everything about your Authentication
 paths:
   /users:
     post:
@@ -146,6 +148,593 @@ paths:
                     type: string
                     example: Users dengan nama test tidak ada
 
+  /users/{user_id}:
+    put:
+      tags:
+          - "Users"
+      summary: Update Avatar
+      description: Edit avatar user by id. (Untuk Gambar dan Password tidak wajib)
+      parameters:
+        - schema:
+            type: integer
+          name: user_id
+          in: path
+          required: true
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/Users"
+                - type: object
+                  properties:
+                    address:
+                      type: string
+                      example: Surabaya
+                    occupation:
+                      type: string
+                      example: Mahasiswa
+                    password:
+                      type: string
+                      example: "123456789"
+                    file:
+                      type: string
+                      format: binary
+      
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                      - $ref: "#/components/schemas/Users"
+                      - type: object
+                        properties:
+                          address:
+                            type: string
+                            example: Surabaya
+                          occupation:
+                            type: string
+                            example: Mahasiswa
+                          avatar_url:
+                            type: string
+                            example: "https://ik.imagekit.io/dewangga/challenge6/avatar/1714738021200_xSFGVhvDv.jpeg"
+        
+        400:
+          description: Input must be Required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Input must be Required
+
+        404:
+          description: Post_id Tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: User with id 100 not found
+                  
+      security:
+        - bearerAuth: []
+                
+    get:
+      tags:
+        - "Users"
+      summary: get detail users
+      parameters:
+        - schema:
+            type: integer
+          name: user_id
+          in: path
+          required: true
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                      - $ref: "#/components/schemas/Users"
+                      - type: object
+                        properties:
+                          address:
+                            type: string
+                            example: Surabaya
+                          occupation:
+                            type: string
+                            example: Mahasiswa
+                          avatar_url:
+                            type: string
+                            example: "https://ik.imagekit.io/dewangga/challenge6/avatar/1714738021200_xSFGVhvDv.jpeg"
+
+        400:
+          description: User_id tidak ditemukan/tidak valid!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: User tidak ditemukan dengan User_id 100
+
+      security:
+        - bearerAuth: []
+
+  /auth/login:
+    post:
+      tags:
+        - "Auth"
+      summary: Login
+      description: Login for using system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: Admin@gmail.com
+                password:
+                  type: string
+                  example: 12345
+
+      responses:
+        201:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                          - $ref: "#/components/schemas/Users"
+                          - type: object
+                            properties:
+                              address:
+                                type: string
+                                example: Surabaya
+                              occupation:
+                                type: string
+                                example: Mahasiswa
+                              avatar_url:
+                                type: string
+                                example: "https://ik.imagekit.io/dewangga/challenge6/avatar/1714738021200_xSFGVhvDv.jpeg"
+                              token:
+                                type: string
+                                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6IkFkbWluQGdtYWlsLmNvbSIsImFkZHJlc3MiOiJTdXJhYmF5YSIsIm9jY3VwYXRpb24iOiJNYWhhc2lzd2EiLCJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9pay5pbWFnZWtpdC5pby9kZXdhbmdnYS9jaGFsbGVuZ2U2L2F2YXRhci8xNzE0NzM4MDIxMjAwX3hTRkdWaHZEdi5qcGVnIiwiaWF0IjoxNzE0NzQ2NDIwfQ.dpMIWYu_bjm-_Bc4TXqCZ_fXV2eSkPR7Icup0EGklSs"
+        400:
+          description: Invalid email or password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid email or password
+
+  /auth/authenticate:
+    get:
+      tags:
+        - "Auth"
+      summary: Try the Code
+      description: Try the Code
+
+      responses:
+        201:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: OK
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                          - $ref: "#/components/schemas/Users"
+                          - type: object
+                            properties:
+                              address:
+                                type: string
+                                example: Surabaya
+                              occupation:
+                                type: string
+                                example: Mahasiswa
+                              avatar_url:
+                                type: string
+                                example: "https://ik.imagekit.io/dewangga/challenge6/avatar/1714738021200_xSFGVhvDv.jpeg"
+                              
+      security:
+        - bearerAuth: []
+
+  /posts:
+    post:
+      tags:
+        - "Posts"
+      summary: Posts
+      description: Posts judul dan deskripsi serta gambar
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Cute Cats
+                description:
+                  type: string
+                  example: Look at this cutie
+                file:
+                  type: string
+                  format: binary
+
+      responses:
+        201:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Post Successfully
+                  data:
+                    type: object
+                    properties:
+                      post:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 5
+                          - $ref: "#/components/schemas/Posts"
+                          - type: object
+                            properties:
+                              user_id:
+                                type: integer
+                                example: 1
+
+        400:
+          description: Input must be required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Input must be required
+
+      security:
+      - bearerAuth: []
+
+    get:
+      tags:
+        - "Posts"
+      summary: Get all Posts
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Berhasil mengambil data Users
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                        - $ref: "#/components/schemas/Posts"
+
+      security:
+      - bearerAuth: []
+
+  /posts/{post_id}:
+    get:
+      tags:
+        - "Posts"
+      summary: get detail Posts
+      parameters:
+        - schema:
+            type: integer
+          name: post_id
+          in: path
+          required: true
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Success
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                      - $ref: "#/components/schemas/Posts"
+                      - type: object
+                        properties:
+                          post_id:
+                            type: string
+                            example: 6634f66888c257da3309ba00
+                          user_id:
+                            type: integer
+                            example: 1
+
+        400:
+          description: Post_id tidak ditemukan/tidak valid!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Post tidak ditemukan dengan Post_id 100
+
+      security:
+        - bearerAuth: []
+
+    put:
+      tags:
+          - "Posts"
+      summary: Update Posts
+      description: Edit Judul dan Deskripsi Post by id
+      parameters:
+        - schema:
+            type: integer
+          name: post_id
+          in: path
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Selfie
+                description:
+                  type: string
+                  example: Selfie with my cat
+
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Post updated successfully
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 5
+                      title:
+                        type: string
+                        description: Selfie
+                      description:
+                        type: string
+                        example: Selfie with my cat
+                      post_url:
+                        type: string
+                        example: https://ik.imagekit.io/dewangga/challenge6/postsImage/1714746968855_wz8aEEBNY.jpeg
+
+        400:
+          description: All Input Update Required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: All Input Update Required
+
+        404:
+          description: Post_id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Post with id 100 not found
+
+      security:
+        - bearerAuth: []
+
+    delete:
+      tags:
+      - "Posts"
+      summary: Delete post
+      description: Delete post by id.
+      parameters:
+        - schema:
+            type: integer
+          name: post_id
+          in: path
+          required: true
+      
+      responses:
+        200:
+          description: Post deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Post deleted successfully
+        
+        404:
+          description: Post_id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Post with id 100 not found
+            
+        500:
+          description: Failed to delete image from ImageKit
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Failed to delete image from ImageKit
+                  
+      security:
+        - bearerAuth: []
+      
+
 components:
   securitySchemes:
     bearerAuth:
@@ -166,4 +755,17 @@ components:
         email:
           type: string
           example: Admin@gmail.com
+        
+    Posts:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Cute Cats
+        description:
+          type: string
+          example: Look at this cutie
+        post_url:
+          type: string
+          example: https://ik.imagekit.io/dewangga/challenge6/postsImage/1714746968855_wz8aEEBNY.jpeg
         
