@@ -5,9 +5,9 @@ POST http://localhost:3000/api/v1/users
 Content-Type: application/json
 
 {
-    "first_name": "Kepin",
-    "last_name": "Yohanes",
-    "email": "Kepin@gmail.com",
+    "first_name": "Dewangga",
+    "last_name": "Nanda",
+    "email": "Dewangga@gmail.com",
     "password": "12345"
 }
 
@@ -15,14 +15,14 @@ Content-Type: application/json
 GET http://localhost:3000/api/v1/users
 
 ### UPDATE - USERS
-PUT http://localhost:3000/api/v1/users/2
+PUT http://localhost:3000/api/v1/users/1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6ImRld2FuZ2dhQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNDUiLCJhZGRyZXNzIjpudWxsLCJvY2N1cGF0aW9uIjpudWxsLCJhdmF0YXJfdXJsIjpudWxsLCJpYXQiOjE3MTQzOTU2NTR9.f9dcAlLaibk86s6kUYywTVe1kzbDfuI-4hDzuZeNeqc
 
 {
-    "first_name": "Dewangga",
-    "last_name": "Nanda",
-    "email": "Dewangga@gmail.com",
+    "first_name": "Admin",
+    "last_name": "Admin",
+    "email": "Admin@gmail.com",
     "address": "Surabaya",
     "occupation": "Mahasiswa"   
 }
@@ -39,11 +39,11 @@ Content-Type: application/json
 {
     "first_name": "Dewangga",
     "last_name": "Nanda",
-    "email": "Dewangga@gmail.com"
+    "email": "Admin@gmail.com"
 }
 
 ### GET - Authenticate
 GET http://localhost:3000/api/v1/auth/authenticate
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6ImRld2FuZ2dhQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNDUiLCJhZGRyZXNzIjpudWxsLCJvY2N1cGF0aW9uIjpudWxsLCJhdmF0YXJfdXJsIjpudWxsLCJpYXQiOjE3MTQzOTU2NTR9.f9dcAlLaibk86s6kUYywTVe1kzbDfuI-4hDzuZeNeqc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RfbmFtZSI6IkRld2FuZ2dhIiwibGFzdF9uYW1lIjoiTmFuZGEiLCJlbWFpbCI6IkFkbWluQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNDUiLCJhZGRyZXNzIjoiU3VyYWJheWEiLCJvY2N1cGF0aW9uIjoiTWFoYXNpc3dhIiwiYXZhdGFyX3VybCI6Imh0dHBzOi8vaWsuaW1hZ2VraXQuaW8vZGV3YW5nZ2EvMTcxNDcyODcyNzQyOF9nSVlkbDVJRXkuanBnIiwiaWF0IjoxNzE0NzI4NzUyfQ.nje7vJKPukqOlwhTh3aRAjwGK-lZOVUuDbLsW3xGiYU
 
 ############################

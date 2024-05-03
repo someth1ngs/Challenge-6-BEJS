@@ -32,18 +32,14 @@ let restrict = (req, res, next) => {
 
 // Required Controller
 const userController = require("../../controller/v1/userController.js");
-const authController = require("../../controller/v1/authController.js");
 
-
-// API Users + Profile //
-router.post("/api/v1/users", userController.store);
+// API Users //
+router.post("/api/v1/users", userController.register);
 router.get("/api/v1/users",  userController.index);
-
-// Buat update semuanya (input semua wajib di isi)
 router.put("/api/v1/users/:id", restrict, image.single("file"), userController.update);
 
-// API Auth //
-router.post("/api/v1/auth/login", authController.login);
-router.get("/api/v1/auth/authenticate", restrict, authController.auth);
+// LOGIN AND AUTH API
+router.post("/api/v1/auth/login", userController.login);
+router.get("/api/v1/auth/authenticate", restrict, userController.auth);
 
 module.exports = router;
