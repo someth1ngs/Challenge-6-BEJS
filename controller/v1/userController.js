@@ -83,6 +83,21 @@ module.exports = {
       let { first_name, last_name, email, address, occupation, password } =
         req.body;
 
+      if (!first_name || !last_name || !email || !address || !occupation) {
+        return res.status(400).json({
+          status: false,
+          message: "All Input Update Required",
+        });
+      }
+
+      let updateData = {
+        first_name,
+        last_name,
+        email,
+        address,
+        occupation,
+      };
+
       const exist = await prisma.user.findUnique({
         where: { id },
       });
@@ -94,14 +109,6 @@ module.exports = {
           data: null,
         });
       }
-
-      let updateData = {
-        first_name,
-        last_name,
-        email,
-        address,
-        occupation,
-      };
 
       if (req.file) {
         let strFile = req.file.buffer.toString("base64");
@@ -115,13 +122,6 @@ module.exports = {
       if (password) {
         let encryptedPassword = await bcrypt.hash(password, 10);
         updateData.password = encryptedPassword;
-      }
-
-      if (!first_name || !last_name || !email || !address || !occupation) {
-        return res.status(400).json({
-          status: false,
-          message: "All Input Update Required",
-        });
       }
 
       const user = await prisma.user.update({

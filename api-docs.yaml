@@ -1,0 +1,179 @@
+openapi: 3.0.1
+info:
+  title: API DOCUMENTATION
+  description: API Documentation for Challenge 6 about Post and Deploy
+  version: 1.0.1
+  contact:
+    email: adewanggan@gmail.com
+servers:
+  - url: http://localhost:3000/api/v1
+  - url: https://expressjs-development-6fcc.up.railway.app/api/v1/
+tags:
+  - name: Users
+    description: Everything about your Users
+  - name: Posts
+    description: Everything about your Posts
+paths:
+  /users:
+    post:
+      tags:
+        - "Auth"
+      summary: register new account for Authentication
+      description: mendaftarkan account baru kedalam database untuk sebuah akses
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/Auth"
+                - properties:
+                    password:
+                      type: string
+                      example: admin123
+
+      responses:
+        201:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Success
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 2
+                          - $ref: "#/components/schemas/Auth"
+                          
+        400:
+          description: Email has already been used!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: email has already been used!
+                  data:
+                    example: ~
+
+        401:
+          description: Input must be required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: input must be required
+                  data:
+                    example: ~
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Users:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Dewangga
+        email:
+          type: string
+          example: dewangga@gmail.com
+        password:
+          type: string
+          example: dewangga123
+
+    Accounts:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        bank_name:
+          type: string
+          example: BCA
+        bank_account_number:
+          type: string
+          example: "24810030912"
+        balance:
+          type: integer
+          example: 5000000
+        user_id:
+          type: integer
+          example: 1
+
+    Profiles:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        identity_type:
+          type: string
+          example: KTP
+        identity_number:
+          type: string
+          example: "0000000000000000"
+        address:
+          type: string
+          example: Jalan Banyu Urip
+        user_id:
+          type: integer
+          example: 1
+
+    Transactions:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        amount:
+          type: integer
+          example: 100000
+        source_account_id:
+          type: integer
+          example: 1
+        destination_account_id:
+          type: integer
+          example: 2
+
+    Auth:
+      type: object
+      properties:
+        name:
+          type: string
+          example: admin
+        email:
+          type: string
+          example: admin@gmail.com
