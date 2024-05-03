@@ -53,6 +53,7 @@ router.use(
 // API Users //
 router.post("/api/v1/users", userController.register);
 router.get("/api/v1/users",  userController.index);
+router.get("/api/v1/users/:id",  userController.show);
 router.put("/api/v1/users/:id", restrict, image.single("file"), userController.update);
 
 // LOGIN AND AUTH API

@@ -7,12 +7,15 @@ Content-Type: application/json
 {
     "first_name": "Dewangga",
     "last_name": "Nanda",
-    "email": "Admin1@gmail.com",
+    "email": "Admin3@gmail.com",
     "password": "12345"
 }
 
 ### GET - menampilkan daftar users.
-GET http://localhost:3000/api/v1/users
+GET http://localhost:3000/api/v1/users?search=akosdkaoskdoakd`
+
+### GET - menampilkan detail user.
+GET http://localhost:3000/api/v1/users/1
 
 ### UPDATE - USERS (Bisa tanpa avatar/password, kalau ingin pakai avatar harus pake postman)
 PUT http://localhost:3000/api/v1/users/2

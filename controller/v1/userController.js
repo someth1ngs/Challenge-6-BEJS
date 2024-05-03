@@ -67,10 +67,44 @@ module.exports = {
         });
       }
 
+      users.forEach((user) => {
+        delete user.password;
+        delete user.address;
+        delete user.occupation;
+        delete user.avatar_url;
+        delete user.avatar_id;
+      });
+
       res.status(200).json({
         status: true,
         message: "Berhasil mengambil data Users",
         data: users,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  show: async (req, res, next) => {
+    const id = Number(req.params.id);
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id },
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          status: false,
+          message: `User with id ${id} not found`,
+          data: null,
+        });
+      }
+      delete user.password;
+      
+      res.status(200).json({
+        status: true,
+        message: "success",
+        data: user,
       });
     } catch (error) {
       next(error);

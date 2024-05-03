@@ -98,6 +98,54 @@ paths:
                     type: string
                     example: input must be required
 
+    get:
+      tags:
+        - "Users"
+      summary: Get all users
+      parameters:
+        - schema:
+            type: string
+          name: search
+          in: query
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Berhasil mengambil data Users
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                        - $ref: "#/components/schemas/Users"
+
+        400:
+          description: user dengan nama tersebut tidak ada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Users dengan nama test tidak ada
+
 components:
   securitySchemes:
     bearerAuth:
