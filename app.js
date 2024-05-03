@@ -5,6 +5,8 @@ const morgan = require("morgan");
 const cors = require("cors");
 const router = require("./routes/v1");
 
+app.get('/', (req,res) => res.json({status: true, message: "Hello World!", data: null}))
+
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
